@@ -1,0 +1,158 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smashcards Creator</title>
+  <link rel="stylesheet" href="SmashcardsHomepageCSS.css">
+</head>
+<body class="smashcardsCreator">
+
+
+  <header>
+    <h1>Smashcards Creator</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="Shop.html">Shop</a>
+    <a href="Contact.html">Contact</a>
+    <a href="SmashcardsCreater.html">Send a Smashcard idea</a>
+    <a href="Library.html">Smashcards Expansions</a>
+	<a href ="Rules.html">Rules</a>
+  </nav>
+
+ 
+  <div id="form-container">
+    <h2>Create Your Smashcard</h2>
+<p> This form allows you to submit your Smashcard ideas, but please note that submission does not guarantee your idea will be used. </p>
+
+   <form id="cardForm" action="submit_contact_form.php" method="POST">
+    <label>Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter Name" required>
+
+    <label>HP:</label>
+    <input type="number" id="hp" name="hp" placeholder="Enter HP" required>
+
+    <label>Card Power:</label>
+    <input type="number" id="cardPower" name="cardPower" placeholder="Enter Card Power" required>
+
+    <label>Ability Name:</label>
+    <input type="text" id="abilityName" name="abilityName" placeholder="Enter Ability Name (Optional)">
+
+    <label>Ability Text:</label>
+    <input type="text" id="abilityText" name="abilityText" placeholder="Enter Ability Text (Optional)">
+
+
+    <label>Attack 1 Name:</label>
+    <input type="text" id="attack1Name" name="attack1Name" placeholder="Enter Attack 1 Name" required>
+
+    <label>Attack 1 Text:</label>
+    <input type="text" id="attack1Text" name="attack1Text" placeholder="Enter Attack 1 Text">
+
+    <label>Attack 1 Damage:</label>
+    <input type="number" id="attack1Damage" name="attack1Damage" placeholder="Enter Attack 1 Damage" >
+
+    <label>Attack 1 Priority:</label>
+    <input type="number" id="attack1Priority" name="attack1Priority" placeholder="Enter Attack 1 Priority">
+
+    <label>Attack 1 Type:</label>
+    <input type="text" id="attack1Type" name="attack1Type" placeholder="Enter Attack 1 Type">
+
+
+    <label>Attack 2 Name:</label>
+    <input type="text" id="attack2Name" name="attack2Name" placeholder="Enter Attack 2 Name" >
+
+    <label>Attack 2 Text:</label>
+    <input type="text" id="attack2Text" name="attack2Text" placeholder="Enter Attack 2 Text">
+
+    <label>Attack 2 Damage:</label>
+    <input type="number" id="attack2Damage" name="attack2Damage" placeholder="Enter Attack 2 Damage" >
+
+    <label>Attack 2 Priority:</label>
+    <input type="number" id="attack2Priority" name="attack2Priority" placeholder="Enter Attack 2 Priority">
+
+    <label>Attack 2 Type:</label>
+    <input type="text" id="attack2Type" name="attack2Type" placeholder="Enter Attack 2 Type">
+
+    <label>Weakness:</label>
+    <input type="text" id="weakness" name="weakness" placeholder="Enter Weakness">
+
+
+    <button type="submit">Send Smashcard</button>
+</form>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Smashcards. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function encodeAllCards() {
+      let name = document.getElementById("name").value;
+      let hp = document.getElementById("hp").value;
+      let cardPower = document.getElementById("cardPower").value;
+      let abilityName = document.getElementById("abilityName").value;
+      let abilityText = document.getElementById("abilityText").value;
+      let attack1Name = document.getElementById("attack1Name").value;
+      let attack1Text = document.getElementById("attack1Text").value;
+      let attack1Damage = document.getElementById("attack1Damage").value;
+      let attack1Priority = document.getElementById("attack1Priority").value;
+      let attack1Type = document.getElementById("attack1Type").value;
+      let weakness = document.getElementById("weakness").value;
+
+      let encodedString = `${name}|${hp}|${cardPower}|${abilityName}|${abilityText}|${attack1Name}|${attack1Text}|${attack1Damage}|${attack1Priority}|${attack1Type}|${weakness}`;
+      document.getElementById("encodedData").value = encodedString;
+      document.getElementById("encodedDataField").value = encodedString;
+    }
+
+    function updateEncodedData() {
+      document.getElementById("encodedDataField").value = document.getElementById("encodedData").value;
+    }
+  </script>
+
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smashcards Creator</title>
+  <link rel="stylesheet" href="SmashcardsHomepageCSS.css">
+</head>
+<body class="smashcardsCreator">
+
+  <!-- Header -->
+  <header>
+    <h1>Smashcards Creator</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="Shop.html">Shop</a>
+    <a href="Contact.html">Contact</a>
+    <a href="SmashcardsCreater.html">Send a Smashcard idea</a>
+    <a href="Library.html">Smashcards Expansions</a>
+    <a href="Rules.html">Rules</a>
+  </nav>
+
+  <!-- Form Container -->
+  <div id="form-container">
+    <h2>Create Your Smashcard</h2>
+    <p>This form allows you to submit your Smashcard ideas, but please note that submission does not guarantee your idea will be used.</p>
+
+    <!-- Link to Google Form -->
+    <a href="https://forms.gle/NPWg3rA8Cympysnf8" target="_blank">
+      <button>Fill out the Smashcard Idea Form</button>
+    </a>
+
+  </div>
+
+ 
+
+</body>
+</html>
