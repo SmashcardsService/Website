@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smashcards Game</title>
+    <style>
+        .card-image {
+            width: 200px; /* Set the size of the images */
+            height: auto;
+        }
+        .attack-button {
+            margin: 5px; /* Add some spacing between buttons */
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Smashcards!</h1>
+    <div id="output"></div>
+    <img id="active-card" class="card-image" src="" alt="Active Smasher">
+    <img id="opponent-card" class="card-image" src="" alt="Opponent Smasher">
+    <div id="attack-buttons"></div>
+    <script>
+        // Card Class
+        class Card {
+            constructor(name, cardPower, hp, imageUrl) {
+                this.name = name;
+                this.cardPower = cardPower;
+                this.hp = hp;
+                this.imageUrl = imageUrl;
+            }
+        }
+
+        // Attack Class
+        class Attack {
+            constructor(name, damage, priority, type) {
+                this.name = name;
+                this.damage = damage;
+                this.priority = priority;
+                this.type = type; // Attack type
+            }
+        }
+
+        // Smasher Class
+        class Smasher extends Card {
+            constructor(name, cardPower, hp, weakness, attacks, imageUrl) {
+                super(name, cardPower, hp, imageUrl);
+                this.weakness = weakness; // Weakness type
+                this.attacks = attacks; // Array of Attack objects
+            }
+        }
+
+        // Deck Class
+        class Deck {
+            constructor() {
+                this.cards = [];
+            }
+
+            shuffle() {
+                this.cards.sort(() => Math.random() - 0.5);
+            }
+
+            draw() {
+                return this.cards.pop();
+            }
+
+            addCard(card) {
+                this.cards.push(card);
+            }
+        }
+
+        // Game Class
+class Game {
+    constructor() {
+        this.playerDeck = new Deck();
+        this.opponentDeck = new Deck();
+        this.playerActiveSmasher = null;
+        this.opponentActiveSmasher = null;
+        this.gameOver = false;
+    }
+
+    setupGame() {
+        this.playerDeck.shuffle();
+        this.opponentDeck.shuffle();
+        this.playerActiveSmasher = this.playerDeck.draw();
+        this.opponentActiveSmasher = this.opponentDeck.draw();
+        this.displaySmasherInfo();
+    }
+
+    displaySmasherInfo() {
+        document.getElementById('output').innerHTML = 
+            `Player Active Smasher: ${this.playerActiveSmasher.name} (HP: ${this.playerActiveSmasher.hp})<br>
+             Opponent Active Smasher: ${this.opponentActiveSmasher.name} (HP: ${this.opponentActiveSmasher.hp})<br>
+             Choose an attack:`;
+        document.getElementById('active-card').src = this.playerActiveSmasher.imageUrl; // Player image
+        document.getElementById('opponent-card').src = this.opponentActiveSmasher.imageUrl; // Opponent image
+        this.displayAttackButtons();
+    }
+
+    displayAttackButtons() {
+        const buttonsDiv = document.getElementById('attack-buttons');
+        buttonsDiv.innerHTML = ''; // Clear previous buttons
+
+        this.playerActiveSmasher.attacks.forEach((attack, index) => {
+            const button = document.createElement('button');
+            button.innerText = attack.name; // Button text is the attack name
+            button.className = 'attack-button'; // Add a class for styling
+            button.onclick = () => this.playTurn(index); // Set button click event
+            buttonsDiv.appendChild(button);
+        });
+    }
+
+    playTurn(selectedAttackIndex) {
+        if (this.playerActiveSmasher && this.opponentActiveSmasher && !this.gameOver) {
+            // Player attack
+            this.attack(this.playerActiveSmasher, this.opponentActiveSmasher, selectedAttackIndex);
+
+            // Check if the game is still active before CPU attacks
+            if (!this.gameOver) {
+                // CPU attack
+                const cpuAttack = this.chooseBestAttack(this.opponentActiveSmasher, this.playerActiveSmasher);
+                if (cpuAttack) {
+                    const cpuAttackIndex = this.opponentActiveSmasher.attacks.indexOf(cpuAttack);
+                    this.attack(this.opponentActiveSmasher, this.playerActiveSmasher, cpuAttackIndex);
+                }
+            }
+        }
+    }
+
+    chooseBestAttack(attacker, defender) {
+        let bestAttack = null;
+        let maxDamage = -1;
+
+        attacker.attacks.forEach(attack => {
+            let damage = attack.damage;
+            // Check for weakness
+            if (attack.type === defender.weakness) {
+                damage *= 2; // Double damage if it's super effective
+            }
+
+            // Find the attack that does the most damage
+            if (damage > maxDamage) {
+                maxDamage = damage;
+                bestAttack = attack;
+            }
+        });
+
+        return bestAttack; // Return the best attack
+    }
+
+    attack(attacker, defender, selectedAttackIndex) {
+        const attack = attacker.attacks[selectedAttackIndex];
+        let damage = attack.damage;
+
+        // Check for weakness based on defender's weakness
+        if (attack.type === defender.weakness) {
+            damage *= 2; // Double damage if the attack matches the defender's weakness
+        }
+
+        defender.hp -= damage;
+
+        let outputMessage = `${attacker.name} uses ${attack.name} on ${defender.name}!`;
+
+        // Show HP only if it's greater than or equal to 0
+        if (defender.hp > 0) {
+            outputMessage += ` ${defender.name} HP: ${defender.hp}`;
+        } else {
+            outputMessage += ` ${defender.name} is defeated!`;
+            this.handleDefeat(defender);
+        }
+
+        // Check if the attack was super effective
+        if (attack.type === defender.weakness) {
+            outputMessage += `<br>It's super effective!`;
+        }
+
+        document.getElementById('output').innerHTML += `<br>${outputMessage}`;
+    }
+
+    handleDefeat(defeatedSmasher) {
+        if (defeatedSmasher === this.opponentActiveSmasher) {
+            if (this.opponentDeck.cards.length > 0) {
+                this.opponentActiveSmasher = this.opponentDeck.draw();
+                document.getElementById('output').innerHTML += 
+                    `<br>${this.opponentActiveSmasher.name} comes in!`;
+            } else {
+                this.gameOver = true; // Set game over state
+                document.getElementById('output').innerHTML += `<br>Player won! You defeated the opponent!`;
+                this.endGame();
+                return; // Prevent further actions
+            }
+        } else if (defeatedSmasher === this.playerActiveSmasher) {
+            if (this.playerDeck.cards.length > 0) {
+                this.playerActiveSmasher = this.playerDeck.draw();
+                document.getElementById('output').innerHTML += 
+                    `<br>${this.playerActiveSmasher.name} comes in!`;
+            } else {
+                this.gameOver = true; // Set game over state
+                document.getElementById('output').innerHTML += `<br>You have no smashers left! You lose!`;
+                this.endGame();
+                return; // Prevent further actions
+            }
+        }
+
+        // Only call displaySmasherInfo if the game is not over
+        if (!this.gameOver) {
+            this.displaySmasherInfo();
+        }
+    }
+
+    // End the game function to handle game termination
+    endGame() {
+        const buttonsDiv = document.getElementById('attack-buttons');
+        buttonsDiv.innerHTML = ''; // Clear attack buttons
+
+        // Determine the winner and display an appropriate message
+        const winnerMessage = this.playerActiveSmasher && this.playerDeck.cards.length === 0 ?
+            `<br>You have no smashers left! You lose!` :
+            `<br>Player won! You defeated the opponent!`;
+
+        document.getElementById('output').innerHTML += `<br>The game has ended.${winnerMessage} Refresh to play again.`; // Show winner
+    }
+}
+	
+
+        // Sample Usage
+        const game = new Game();
+        game.playerDeck.addCard(new Smasher("Lava Rock", 1, 60, "Water", [
+            new Attack("Scorching Slam", 20, 1, "Fire")
+        ], 'images/LavaRock.png')); // Path to the image
+		
+        game.playerDeck.addCard(new Smasher("Magic Orb", 1, 30, "Fire", [
+            new Attack("Magic Pulse", 20, 1, "Magic"),
+        ], 'images/MagicOrb.png')); // Ensure correct file extension
+
+        game.opponentDeck.addCard(new Smasher("Magic Orb", 1, 30, "Fire", [
+            new Attack("Magic Pulse", 20, 1, "Magic"),
+        ], 'images/MagicOrb.png')); // Ensure correct file extension
+
+        game.opponentDeck.addCard(new Smasher("Lava Rock", 1, 60, "Water", [  
+            new Attack("Scorching Slam", 20, 1, "Fire")
+        ], 'images/LavaRock.png')); // Path to the image
+		
+        game.setupGame();
+    </script>
+</body>
+</html>
