@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smashcards Expansions</title>
+  <link rel="stylesheet" href="SmashcardsHomepageCSS.css">
+  <style>
+    .card-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+	.card {
+	  border: 1px solid #ccc;
+	  padding: 5px;
+	  text-align: center;
+	  cursor: pointer;
+	  width: 180px; /* Adjust width */
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center; /* Center horizontally */
+	  justify-content: center; /* Center vertically */
+	}
+
+	.card img {
+	  max-width: 100%;
+	  height: auto;
+	  display: block;
+	}
+
+    .card img:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="library">
+  <header>
+    <h1>Smashcards Expansions</h1>
+  </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="Shop.html">Shop</a>
+        <a href="Contact.html">Contact</a>
+        <a href="SmashcardsCreater.html">Submit a Smashcard Idea</a>
+        <a href="Library.html">Expansions</a>
+        <a href="Rules.html">Rules</a>
+    </nav>
+
+  <label for="filter">Filter by Expansion:</label>
+  <select id="filter" onchange="filterCards()">
+    <option value="all">All</option>
+    <option value="elemental">Elemental Fury</option>
+    <option value="cosmic">Cosmic Clash</option>
+    <option value="soaring">Soaring Zenith</option>
+  </select>
+
+  <div id="elementalGallery" class="card-gallery"></div>
+  <div id="cosmicGallery" class="card-gallery"></div>
+  <div id="soaringGallery" class="card-gallery"></div>
+
+  <!-- Modal for Enlarged Image -->
+  <div id="modal" class="modal">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <img id="modalImg">
+  </div>
+
+  <script>
+    const imageFolder = 'images/';
+    const elementalGallery = document.getElementById('elementalGallery');
+    const cosmicGallery = document.getElementById('cosmicGallery');
+    const soaringGallery = document.getElementById('soaringGallery');
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+
+function createExpansionHeader(expansion, targetGallery) {
+  const header = document.createElement('div');
+  header.classList.add('expansion-header');
+
+  const img = document.createElement('img');
+  img.src = `BackgroundImages/${expansion}.png`; 
+  img.alt = expansion + " Logo";
+  img.style.maxWidth = "200px"; // Adjust as needed
+  img.style.height = "auto";
+
+  header.appendChild(img);
+  targetGallery.appendChild(header);
+}
+
+
+    function loadCards() {
+      elementalGallery.innerHTML = '';
+      cosmicGallery.innerHTML = '';
+      soaringGallery.innerHTML = '';
+
+     createExpansionHeader('ElementalFury', elementalGallery);
+      for (let i = 1; i <= 54; i++) addCard(i, 'elemental', elementalGallery);
+
+      createExpansionHeader('CosmicClash', cosmicGallery);
+      for (let i = 55; i <= 108; i++) addCard(i, 'cosmic', cosmicGallery);
+
+      createExpansionHeader('SoaringZenith', soaringGallery);
+      for (let i = 109; i <= 135; i++) addCard(i, 'soaring', soaringGallery);
+    }
+
+    function addCard(i, expansion, targetGallery) {
+      const imgElement = document.createElement('img');
+      imgElement.src = `${imageFolder}card${i}.png`;
+      imgElement.alt = `Smashcard ${i}`;
+      imgElement.onclick = function() {
+        openModal(imgElement.src);
+      };
+
+      const cardElement = document.createElement('div');
+      cardElement.classList.add('card', expansion);
+      cardElement.appendChild(imgElement);
+      targetGallery.appendChild(cardElement);
+    }
+
+    function filterCards() {
+      const filterValue = document.getElementById('filter').value;
+
+      filterGallery(elementalGallery, filterValue, 'elemental');
+      filterGallery(cosmicGallery, filterValue, 'cosmic');
+      filterGallery(soaringGallery, filterValue, 'soaring');
+    }
+
+    function filterGallery(gallery, filterValue, expansion) {
+      const cards = gallery.querySelectorAll('.card');
+      const header = gallery.querySelector('.expansion-header');
+
+      cards.forEach(card => {
+        if (filterValue === 'all' || card.classList.contains(filterValue)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      if (filterValue === 'all' || header.textContent.includes(filterValue.charAt(0).toUpperCase() + filterValue.slice(1))) {
+        header.style.display = 'block';
+      } else {
+        header.style.display = 'none';
+      }
+    }
+
+    function openModal(imageSrc) {
+      modal.style.display = "flex";
+      modalImg.src = imageSrc;
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+    loadCards();
+  </script>
+</body>
+</html>
