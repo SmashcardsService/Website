@@ -4,67 +4,485 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smashcards</title>
-    <link rel="stylesheet" href="SmashcardsHomepageCSS.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            margin: 0 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover .product-image::before {
+            left: 100%;
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .product-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .detail-content {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .detail-info {
+            padding: 40px;
+        }
+
+        .detail-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .detail-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+
+        .detail-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .close-btn:hover {
+            background: white;
+            transform: rotate(90deg);
+        }
+
+        .contact-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .shop-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-content {
+                margin: 20px auto;
+            }
+            
+            .detail-info {
+                padding: 30px 20px;
+            }
+            
+            .detail-name {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Shop for Smashcards</h1>
-    </header>
+    <div class="container">
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="Shop.html">Shop</a>
+            <a href="Contact.html">Contact</a>
+            <a href="SmashcardsCreater.html">Submit a Smashcard Idea</a>
+            <a href="Library.html">Expansions</a>
+            <a href="Rules.html">Rules</a>
+        </nav>
 
-    <!-- Navigation Bar -->
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="Shop.html">Shop</a>
-        <a href="Contact.html">Contact</a>
-        <a href="SmashcardsCreater.html">Submit a Smashcard Idea</a>
-        <a href="Library.html">Expansions</a>
-        <a href="Rules.html">Rules</a>
-    </nav>
-
-    <!-- Main Content -->
-    <main>
-        <h2>Standard Smashcards Collection Packs</h2>
-
-        <table>
-            <tr>
-                <th>Set Name</th>
-                <th>Price</th>
-            </tr>
-
-            <a href="EFpack.html">Elemental Fury</a>
-			<p>$1</p>
-			<br>
-			<a href="CCpack.html">Cosmic Clash</a>
-			<p>$2</p>
-
-
-        </table>
-
-        <h2>Smashcards Starter Sets</h2>
-		<img src="BackgroundImages/Decks.png">
-        <div class="starter-set">
-            <a href="CrimsonWrath.html">Elemental Fury:Crimson Wrath</a>
-			<p>$5</p>
-
+        <div class="header">
+            <h1>Modern Shop</h1>
+            <p>Discover amazing products with style</p>
         </div>
 
-        <div class="starter-set">
-            <a href="SurgingTempest.html">Cosmic Clash:Surging Tempest</a>
-			<p>$5</p>
+        <div class="shop-grid" id="shopGrid">
+            <!-- Products will be dynamically inserted here -->
         </div>
+    </div>
 
-        <!-- Order Form -->
-        <h2>Place Your Order</h2>
-        <a href="https://forms.gle/gAYbRzzeosgeZW5S8" target="_blank">
-            <button type="button">Place an Order</button>
-        </a>
+    <!-- Product Detail Modal -->
+    <div class="product-detail" id="productDetail">
+        <button class="close-btn" onclick="closeDetail()">×</button>
+        <div class="detail-content">
+            <div class="detail-image" id="detailImage"></div>
+            <div class="detail-info">
+                <h2 class="detail-name" id="detailName"></h2>
+                <div class="detail-price" id="detailPrice"></div>
+                <div class="detail-description" id="detailDescription"></div>
+                <button class="contact-btn" onclick="contactSeller()">Contact for Purchase</button>
+            </div>
+        </div>
+    </div>
 
-        <p>After submitting, bring the payment in person. We will confirm via email.</p>
-    </main>
+    <script>
+        // EASY CUSTOMIZATION: Add your products here!
+        const products = [
+            {
+                id: 1,
+                name: "Elemental Fury Collection Pack",
+                price: "$0.99",
+                description: "Dominate the battlefield with the power of the Elements!",
+                emoji: "🔥",
+                image: "", // Add your image URL here, like: "https://example.com/headphones.jpg"
+                fullDescription: "This pack contains 9 cards from Elemental Fury to add to your collection!  3 Commons, 2 Uncommons, 2 Asset cards, 1 Rare and 1 Rare or Ultra Rare (25%).  Elemental Fury was released in 2023."
+            },
+            {
+              id: 2,
+                name: "Cosmic Clash Collection Pack",
+                price: "$1.49",
+                description: "Harness the cosmic energy of the universe and destroy your competition!",
+                emoji: "🔥",
+                image: "", // Add your image URL here, like: "https://example.com/headphones.jpg"
+                fullDescription: "This pack contains 9 cards from Cosmic Clash to add to your collection!  3 Commons, 2 Uncommons, 2 Asset cards, 1 Rare and 1 Rare or Ultra Rare (25%). Cosmic Clash was released in 2024"    
+			},
+            {
+                  id: 3,
+                name: "Ethereal Division",
+                price: "$1.99",
+                description: "Unite legendary spirits and ascend to ultimate glory!",
+                emoji: "🔥",
+                image: "", // Add your image URL here, like: "https://example.com/headphones.jpg"
+                fullDescription: "This pack contains 9 cards from Ethereal Division to add to your collection!  3 Commons, 2 Uncommons, 2 Asset cards, 1 Rare and 1 Rare or Ultra Rare (25%).  Ethereal Division is the latest Smashcards Expansion!"
+			},
+            {
+                  id: 4,
+                name: "Crimson Wrath Master Kit (Elemental Fury)",
+                price: "$4.99",
+                description: "Unleash Ultra Crimson Warrior and crush foes with unstoppable elemental might!",
+                emoji: "🔥",
+                image: "", // Add your image URL here, like: "https://example.com/headphones.jpg"
+                fullDescription: "This kit comes with everthing you need to upgrade your gameplay to the top level! Contains 1 Elemental Fury Collection Pack, 20 Red Card sleeves (For Assets), 20 Black card sleeves (For Smashers), a Cardstock Deck box, a Strategy Guide and a Powerful Pre-built Deck, with Ultra Crimson Warrior and an exclusive art Magic Orb!"
+			},     
+			{
+			    id: 5,
+			    name: "Surging Tempest Master Kit (Cosmic Clash)",
+			    price: "$4.99",
+			    description: "Command Ultra Storm Dragon and sweep the battlefield in a surge of cosmic fury!",
+			    emoji: "⚡",
+			    image: "", // Add your image URL here
+			    fullDescription: "This kit comes with everything you need to electrify your gameplay! Contains 1 Cosmic Clash Collection Pack, 20 Blue Card Sleeves (For Assets), 20 Black Card Sleeves (For Smashers), a Cardstock Deck Box, a Strategy Guide, and a Powerful Pre-built Deck featuring Ultra Storm Dragon and an exclusive art Snowflake!"
+			},
+			{
+			    id: 6,
+			    name: "Shattered Dominion Master Kit (Ethereal Division)",
+			    price: "$4.99",
+			    description: "Wield Ultra Shatter Legion and bring ruin to all who oppose your dominion!",
+			    emoji: "💠",
+			    image: "", // Add your image URL here
+			    fullDescription: "This kit comes with everything you need to dominate the Ethereal battlefield! Contains 1 Ethereal Division Collection Pack, 20 Purple Card Sleeves (For Assets), 20 Black Card Sleeves (For Smashers), a Cardstock Deck Box, a Strategy Guide, and a Powerful Pre-built Deck featuring Ultra Shatter Legion and an exclusive art Celestial Wisp!"
+			}
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Smashcards. All rights reserved.</p>
-    </footer>
+        ];
+
+        // Function to create product cards
+        function createProductCard(product) {
+            const displayContent = product.image ? 
+                `<div class="product-image" style="background-image: url('${product.image}')"></div>` :
+                `<div class="product-image">${product.emoji}</div>`;
+            
+            return `
+                <div class="product-card" onclick="showDetail(${product.id})">
+                    ${displayContent}
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-price">${product.price}</div>
+                        <p class="product-description">${product.description}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to display all products
+        function displayProducts() {
+            const grid = document.getElementById('shopGrid');
+            grid.innerHTML = products.map(product => createProductCard(product)).join('');
+        }
+
+        // Function to show product details
+        function showDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const detailImage = document.getElementById('detailImage');
+            if (product.image) {
+                detailImage.style.backgroundImage = `url('${product.image}')`;
+                detailImage.textContent = '';
+            } else {
+                detailImage.style.backgroundImage = '';
+                detailImage.textContent = product.emoji;
+            }
+            
+            document.getElementById('detailName').textContent = product.name;
+            document.getElementById('detailPrice').textContent = product.price;
+            document.getElementById('detailDescription').textContent = product.fullDescription;
+            document.getElementById('productDetail').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Function to close product details
+        function closeDetail() {
+            document.getElementById('productDetail').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Function to handle contact for purchase
+        function contactSeller() {
+            const productName = document.getElementById('detailName').textContent;
+            const message = `Hi! I'm interested in purchasing the ${productName}. Could you provide more details?`;
+            
+            // You can customize this - options include:
+            // 1. Email (replace with your email)
+            window.location.href = `mailto:levijder@gmail.com?subject=Interest in ${productName}&body=${encodeURIComponent(message)}`;
+            
+            // 2. WhatsApp (replace with your number)
+            // window.open(`https://wa.me/1234567890?text=${encodeURIComponent(message)}`);
+            
+            // 3. Custom contact form
+            // window.open('your-contact-form-url');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('productDetail').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetail();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetail();
+            }
+        });
+
+        // Initialize the shop
+        displayProducts();
+
+        // HOW TO ADD MORE PRODUCTS:
+        // 1. Add a new object to the 'products' array above
+        // 2. Include: id (unique number), name, price, description, emoji, fullDescription
+        // 3. The page will automatically update!
+        
+        // EXAMPLE:
+        // {
+        //     id: 7,
+        //     name: "Your Product Name",
+        //     price: "$99.99",
+        //     description: "Short description for the card",
+        //     emoji: "🎮", // Any emoji that represents your product
+        //     fullDescription: "Detailed description that appears in the popup modal when someone clicks the product."
+        // }
+    </script>
 </body>
 </html>
+
