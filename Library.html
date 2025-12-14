@@ -83,12 +83,13 @@
     <option value="elemental">Elemental Fury</option>
     <option value="cosmic">Cosmic Clash</option>
     <option value="soaring">Soaring Zenith</option>
+	<option value="ethereal">Ethereal Division</option>
   </select>
 
   <div id="elementalGallery" class="card-gallery"></div>
   <div id="cosmicGallery" class="card-gallery"></div>
   <div id="soaringGallery" class="card-gallery"></div>
-
+  <div id="etherealGallery" class="card-gallery"></div>
   <!-- Modal for Enlarged Image -->
   <div id="modal" class="modal">
     <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -122,6 +123,7 @@ function createExpansionHeader(expansion, targetGallery) {
       elementalGallery.innerHTML = '';
       cosmicGallery.innerHTML = '';
       soaringGallery.innerHTML = '';
+	  etherealGallery.innerHTML = '';
 
      createExpansionHeader('ElementalFury', elementalGallery);
       for (let i = 1; i <= 54; i++) addCard(i, 'elemental', elementalGallery);
@@ -131,6 +133,9 @@ function createExpansionHeader(expansion, targetGallery) {
 
       createExpansionHeader('SoaringZenith', soaringGallery);
       for (let i = 109; i <= 135; i++) addCard(i, 'soaring', soaringGallery);
+	  
+      createExpansionHeader('EtherealDivision', etherealGallery);
+      for (let i = 136; i <= 186; i++) addCard(i, 'ethereal', etherealGallery);
     }
 
     function addCard(i, expansion, targetGallery) {
@@ -153,6 +158,7 @@ function createExpansionHeader(expansion, targetGallery) {
       filterGallery(elementalGallery, filterValue, 'elemental');
       filterGallery(cosmicGallery, filterValue, 'cosmic');
       filterGallery(soaringGallery, filterValue, 'soaring');
+	   filterGallery(etherealGallery, filterValue, 'ethereal');
     }
 
     function filterGallery(gallery, filterValue, expansion) {
